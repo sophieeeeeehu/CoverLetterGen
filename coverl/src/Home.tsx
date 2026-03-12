@@ -178,6 +178,22 @@ function Home() {
     //   "I am confident that my background in software development makes me an ideal candidate for this position."
     // ]);
     const [ability, setAbility] = useState<any[]>([]);
+    const [selectedability, setSelectedAbility] = useState<any[]>([]);
+
+    const toggleAbility = (targetAbility: any) => {
+        setSelectedAbility((prev) => {
+            // Check if the item is already selected
+            const isSelected = prev.find((item) => item.id === targetAbility.id);
+
+            if (isSelected) {
+                // Remove it if it exists
+                return prev.filter((item) => item.id !== targetAbility.id);
+            } else {
+                // Add it if it doesn't
+                return [...prev, targetAbility];
+            }
+        });
+    };
 
 
 
@@ -206,6 +222,31 @@ function Home() {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '1280px', margin: '20px auto' }}>
+
+            {ability.map((a) => {
+                // Check if this specific item is currently in our selected list
+                const isSelected = selectedability.some((item) => item.id === a.id);
+
+                return (
+                    <div
+                        key={a.id}
+                        onClick={() => toggleAbility(a)}
+                        className={`ability-item ${isSelected ? 'selected' : ''}`}
+                        style={{
+                            padding: '10px',
+                            margin: '5px',
+                            border: isSelected ? '2px solid #b7902e' : '1px solid #ccc',
+                            backgroundColor: isSelected ? '#fff4d6' : 'white',
+                            cursor: 'pointer',
+                            borderRadius: '8px',
+                            transition: 'all 0.2s ease'
+                        }}
+                    >
+                        {a.name}
+                    </div>
+                );
+            })}
+
             <div className='text-input'>
                 <div>
                     <h3>First Name</h3>
@@ -308,7 +349,7 @@ function Home() {
 
                         companylocation={location}
                         date={applyDate}
-                        ability={ability}
+                        ability={selectedability}
                     />
                 </PDFViewer>
             )}
