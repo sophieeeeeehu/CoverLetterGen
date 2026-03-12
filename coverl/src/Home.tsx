@@ -171,12 +171,6 @@ function Home() {
         });
     });
 
-    // paragraph
-    // const [parag] = useState<string[]>([
-    //   "I am highly motivated to join your team and contribute to the innovative projects at your company.",
-    //   "Throughout my career, I have developed a strong foundation in modern web technologies and problem-solving.",
-    //   "I am confident that my background in software development makes me an ideal candidate for this position."
-    // ]);
     const [ability, setAbility] = useState<any[]>([]);
     const [selectedability, setSelectedAbility] = useState<any[]>([]);
 
@@ -203,7 +197,7 @@ function Home() {
             const { data, error } = await supabase
                 .from('CoverLetter')
                 .select('*')
-                .order('id', { ascending: true })
+                .order('id', { ascending: false })
 
             if (error) {
                 console.error(error)

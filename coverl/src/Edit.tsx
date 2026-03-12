@@ -60,7 +60,7 @@ function Edit() {
     return (
         <div style={{ maxWidth: '1280px', margin: '20px auto' }}>
             {selectedItem && (
-                <div className="modal-overlay" onClick={() => setSelectedItem(null)}>
+                <div className="modal-overlay">
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <h2>Edit Item</h2>
                         <form onSubmit={handleSave}>
@@ -72,7 +72,7 @@ function Edit() {
 
                             <h3>Starting Paragraph (I believe .... can)</h3>
                             <input
-                                value={selectedItem.description}
+                                value={selectedItem.descripgtion}
                                 onChange={(e) => setSelectedItem({ ...selectedItem, description: e.target.value })}
                             />
 
