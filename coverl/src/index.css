@@ -13,26 +13,51 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+
 #root {
   width: 100%;
+  min-height: 100vh;
+  background-color: #FFFBF1;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+input {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  padding: 6px 10px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  color: #1f1127;
+  border: 1px solid #d1d5db; 
+  border-radius: 5px; 
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+
+textarea {
+  font-size: 16px;
+  padding: 6px 10px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  color: #1f1127;
+  border: 1px solid #d1d5db; 
+  border-radius: 5px; 
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
 }
 
 a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+  text-decoration: none;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
 
 h1 {
   font-size: 3.2em;
@@ -48,6 +73,7 @@ button {
   font-family: inherit;
   background-color: #3f2789;
   cursor: pointer;
+  color: #fff;
   transition: border-color 0.25s;
 }
 
@@ -84,4 +110,213 @@ button {
   margin: 5px;
   font-size: 15px;
   text-align: left;
+}
+
+/* -----EDIT PAGE ------------------------------------------ */
+.cover-list{
+  display: flex;
+  flex-direction: column;
+  gap:20px;
+  color: #000000;
+}
+
+.cover-item{
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  border: #000000 2px solid;
+  border-radius: 20px;
+  padding: 20px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cover-item:hover {
+  transform: translatey(-3px);
+}
+
+.cover-item h3 {
+  margin: 0;
+  padding: 0;
+}
+
+.cover-item p {
+  margin: 0;
+  padding: 0;
+}
+
+.cover-item .desc{
+  color: #6d24c1; 
+  margin: 0;
+  padding: 0;
+}
+
+/* EDIT POP UP */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7); /* Dims the background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  width: 80%;
+  max-width: 800px;
+  height: 80%;
+  padding: 40px;
+  border-radius: 12px;
+  overflow-y: auto; /* Adds scrollbar if content is too long */
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+
+.modal-content textarea {
+  height: 200px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.modal-content h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 5px;
+  margin-top: 20px;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: end;
+  margin-top: 20px;
+}
+
+
+.add-btn {
+  margin-top: 20px;
+}
+
+/* ------------- BANNER ------------------------------ */
+.BannerBack {
+  font-size: 0.6rem;
+  position: sticky;
+  z-index: 1000;
+  background-color: #2a4068;
+  width: 100%;
+}
+
+.tbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 20px;
+}
+
+.tbar h1 {
+  color: #fffbf1;
+}
+
+.login-laptop {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.login-laptop button {
+  font-family: "Fraunces", serif;
+  color: #ffffff;
+  font-size: 1.4rem;
+  font-weight: 600;
+  padding: 10px;
+}
+
+.login-laptop input {
+  margin: 0px 10px;
+  padding: 5px;
+  font-family: "Fraunces", serif;
+  color: #565aa4;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+
+.login-mobile {
+  display: none;
+}
+.mobile {
+  display: none;
+}
+
+/* 📱 Mobile styles */
+@media (max-width: 768px) {
+
+  .login-form {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    background: #222;
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  .login-form.active {
+    display: flex;
+  }
+
+  .mobile {
+    display: block;
+  }
+  .mobile button{
+    padding: 10px;
+    margin: 0px;
+  }
+
+  .login-laptop {
+    display: none;
+  }
+
+  .tbar {
+    flex-wrap: wrap;
+  }
+
+  .login-mobile{
+    background-color: #d4d3ac;
+    display: flex;
+    padding: 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.login-mobile button {
+  font-family: "Fraunces", serif;
+  color: #ffffff;
+  font-size: 1.4rem;
+  font-weight: 600;
+  padding: 10px;
+}
+
+.login-mobile input {
+  padding: 5px;
+  border: 2px solid #7a771d;
+  width: 90%;
+  font-family: "Fraunces", serif;
+  color: #565aa4;
+  font-weight: 600;
+  font-size: 1.4rem;
+}
+}
+
+
+.mobile button {
+  border: 0px;
+  background-color: transparent;
+  color: #fff;
+  font-size: 1.5rem;
 }
