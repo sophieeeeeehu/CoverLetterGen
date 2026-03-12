@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
 import { supabase } from './supabase';
-import { Document, Page, Text, View, Font, StyleSheet, PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
+import { Document, Page, Text, View, Font, StyleSheet, PDFViewer } from '@react-pdf/renderer';
 
 
 Font.register({

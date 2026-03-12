@@ -1,9 +1,9 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"; // Add BrowserRouter
+import { Routes, Route } from "react-router-dom"; // Add BrowserRouter
 import Home from './Home';
 import { useEffect, useState } from "react";
 import type { User } from '@supabase/supabase-js'
 import { supabase } from './supabase'
-import Edit from './edit';
+import Edit from './Edit';
 import Banner from './banner';
 
 function App() {
