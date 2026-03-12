@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
 import './App.css'
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto Slab",
     color: '#153D63',
     textAlign: "center",
-    marginBottom: 20
+    marginBottom: 5
   },
   text: {
     fontSize: 12,
@@ -34,7 +34,22 @@ const styles = StyleSheet.create({
   },
   signoff: {
     fontSize: 12,
+    marginTop: 20,
+    fontFamily: 'Calibri',
     textAlign: 'right'
+  },
+  mydesc: {
+    fontSize: 12,
+    fontFamily: 'Calibri',
+    textAlign: 'center',
+    color: '#197097',
+    marginBottom: 20
+  },
+  paragraph: {
+    fontSize: 12,
+    fontFamily: 'Calibri',
+    lineHeight: 1.5,
+    marginBottom: 10
   }
 });
 
@@ -44,16 +59,69 @@ type MyPDFProps = {
   hiringManager: string;
   jobtitle: string;
   companyname: string;
+  myaddress: string;
+  mylinkedin: string;
+  myemail: string;
+  companylocation: string;
+  date: string;
+  ability: any[];
 };
 
-const MyPDF = ({ name, lastname, hiringManager, jobtitle, companyname }: MyPDFProps) => (
+const MyPDF = ({
+  name, lastname, hiringManager, jobtitle, companyname,
+  myaddress, mylinkedin, myemail, companylocation, date, ability }: MyPDFProps) => (
   <Document>
     <Page style={styles.page}>
       <Text style={styles.title}>{name} {lastname}</Text>
+      <Text style={styles.mydesc}>{myaddress} | {myemail} | {mylinkedin}</Text>
+      <Text style={styles.text}>
+        {date}
+        {"\n"}
+        {companyname}
+        {"\n"}
+        {companylocation}
+        {"\n"}{"\n"}
+      </Text>
+
+
+
       <View>
-        <Text style={styles.text}>
+        <Text style={styles.paragraph}>
           Dear {hiringManager}, {"\n"}
-          I'm writing to apply for the {jobtitle} Position
+        </Text>
+        <Text style={styles.paragraph}>
+          I am writing to apply for the {jobtitle} position listed on LinkedIn. I believe{" "}
+
+          {ability.map((a, index) => {
+            // Only return the JSX if it's NOT the last index
+            if (index < ability.length - 2) return (
+              <Text key={a.id} style={styles.paragraph}>
+                {a.description},{" "}
+              </Text>
+            );
+
+            if (index < ability.length - 1) return (
+              <Text key={a.id} style={styles.paragraph}>
+                {a.description}{" "}
+              </Text>
+            );
+
+            return (
+              <Text key={a.id} style={styles.paragraph}>
+                and {a.description} will make me a great fit for this position.
+              </Text>
+            );
+          })}
+
+        </Text>
+        {ability.map((a) => (
+          <Text key={a.id} style={styles.paragraph}>
+            {a.content}
+          </Text>
+        ))}
+
+        <Text style={styles.paragraph}>
+          Thank you
         </Text>
       </View>
       <Text style={styles.signoff}>Sincerely,{"\n"} {name} {lastname}</Text>
@@ -63,11 +131,60 @@ const MyPDF = ({ name, lastname, hiringManager, jobtitle, companyname }: MyPDFPr
 
 function App() {
   const [showPreview, setShowPreview] = useState(false)
+  // my info
   const [name, setName] = useState("Sophie");
   const [lastname, setLastName] = useState("Hu");
+  const [myaddress, setMyaddress] = useState("Vancouver, BC")
+  const [mylinkedIn, setLinkedIn] = useState("www.linkedin.com/in/sophiejh")
+  const [myemail, setMyemail] = useState("sophiehu.jh@gmail.com")
+  // company info
   const [hirename, setHirename] = useState("Hiring Manager");
   const [jobname, setJobName] = useState("")
   const [company, setCompany] = useState("")
+  const [location, setLocation] = useState("")
+  // Date
+  const [applyDate] = useState<string>(() => {
+    const now = new Date();
+    // Options to make it "Readable"
+    return now.toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  });
+
+  // paragraph
+  // const [parag] = useState<string[]>([
+  //   "I am highly motivated to join your team and contribute to the innovative projects at your company.",
+  //   "Throughout my career, I have developed a strong foundation in modern web technologies and problem-solving.",
+  //   "I am confident that my background in software development makes me an ideal candidate for this position."
+  // ]);
+  const [ability, setAbility] = useState<any[]>([]);
+
+
+
+  // get data from supabase
+  useEffect(() => {
+    const fetchPhrases = async () => {
+      const { data, error } = await supabase
+        .from('CoverLetter')
+        .select('*')
+        .order('id', { ascending: true })
+
+      if (error) {
+        console.error(error)
+      } else {
+        setAbility(data ?? [])
+        console.log("ability set!")
+      }
+
+    }
+    fetchPhrases()
+  }, [])
+
+  useEffect(() => {
+    console.log("Ability has been updated:", ability);
+  }, [ability]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -88,6 +205,33 @@ function App() {
             placeholder="Enter Last Name"
             value={lastname}
             onChange={(e) => setLastName(e.target.value)}
+          />
+        </div>
+        <div>
+          <h3>My Address</h3>
+          <input
+            type="text"
+            placeholder="Enter location"
+            value={myaddress}
+            onChange={(e) => setMyaddress(e.target.value)}
+          />
+        </div>
+        <div>
+          <h3>My LinkedIn</h3>
+          <input
+            type="text"
+            placeholder="Enter linkedin"
+            value={mylinkedIn}
+            onChange={(e) => setLinkedIn(e.target.value)}
+          />
+        </div>
+        <div>
+          <h3>My Email</h3>
+          <input
+            type="text"
+            placeholder="Enter linkedin"
+            value={myemail}
+            onChange={(e) => setMyemail(e.target.value)}
           />
         </div>
         <div>
@@ -117,6 +261,17 @@ function App() {
             onChange={(e) => setCompany(e.target.value)}
           />
         </div>
+
+        <div>
+          <h3>Company Address</h3>
+          <input
+            type="text"
+            placeholder="Enter Company Name"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+          />
+        </div>
+
       </div>
 
       <button onClick={() => setShowPreview(!showPreview)}>
@@ -128,7 +283,15 @@ function App() {
             lastname={lastname}
             hiringManager={hirename}
             jobtitle={jobname}
-            companyname={company} />
+            companyname={company}
+            myaddress={myaddress}
+            mylinkedin={mylinkedIn}
+            myemail={myemail}
+
+            companylocation={location}
+            date={applyDate}
+            ability={ability}
+          />
         </PDFViewer>
       )}
     </div>
