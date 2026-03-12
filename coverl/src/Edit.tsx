@@ -72,7 +72,7 @@ function Edit() {
 
                             <h3>Starting Paragraph (I believe .... can)</h3>
                             <input
-                                value={selectedItem.descripgtion}
+                                value={selectedItem.description}
                                 onChange={(e) => setSelectedItem({ ...selectedItem, description: e.target.value })}
                             />
 
