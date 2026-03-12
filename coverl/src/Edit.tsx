@@ -96,7 +96,7 @@ function Edit() {
                         className='cover-item'
                         onClick={() => setSelectedItem(a)}>
                         <h3>{index + 1}. {a.name}</h3>
-                        <p className='desc'>I believe my {a.description} can ...</p>
+                        <p className='desc'>I believe {a.description} can ...</p>
                         <p>{a.content}</p>
                     </div>
                 ))}
