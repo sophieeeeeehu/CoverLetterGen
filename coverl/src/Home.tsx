@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
 import { supabase } from './supabase';
-import { Document, Page, Text, View, Font, StyleSheet, PDFViewer } from '@react-pdf/renderer';
+import { Document, Page, Text, View, Font, StyleSheet, PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
 
 
 Font.register({
@@ -23,22 +23,22 @@ const styles = StyleSheet.create({
         padding: 40,
     },
     title: {
-        fontSize: 24,
+        fontSize: 20,
         fontFamily: "Roboto Slab",
         color: '#153D63',
         textAlign: "center",
         marginBottom: 5
     },
     text: {
-        fontSize: 13,
+        fontSize: 12,
         fontFamily: 'Calibri',
         textAlign: 'left',
         lineHeight: 1.2,
         marginBottom: 20
     },
     signoff: {
-        fontSize: 13,
-        marginTop: 20,
+        fontSize: 12,
+        marginTop: 10,
         fontFamily: 'Calibri',
         textAlign: 'right',
         lineHeight: 1.5,
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     bold: {
-        fontSize: 13,
+        fontSize: 12,
         fontFamily: 'Calibri Bold',
         // color: '#197097',
         lineHeight: 1.5,
@@ -169,6 +169,15 @@ function Home() {
             day: 'numeric',
             year: 'numeric'
         });
+    });
+    const [applyDateNum] = useState<string>(() => {
+        const now = new Date();
+
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+
+        return `${year}${month}${day}`;
     });
 
     const [ability, setAbility] = useState<any[]>([]);
@@ -347,6 +356,26 @@ function Home() {
                     />
                 </PDFViewer>
             )}
+            <PDFDownloadLink
+                document={
+                    <MyPDF name={name}
+                        lastname={lastname}
+                        hiringManager={hirename}
+                        jobtitle={jobname}
+                        companyname={company}
+                        myaddress={myaddress}
+                        mylinkedin={mylinkedIn}
+                        myemail={myemail}
+                        companylocation={location}
+                        date={applyDate}
+                        ability={selectedability}
+                    />
+                }
+                fileName={`${applyDateNum}_${name}_${company}_cover.pdf`}
+            >
+                {({ loading }) => (loading ? "Generating PDF..." : "Download PDF")}
+            </PDFDownloadLink>
+
         </div>
     );
 }
