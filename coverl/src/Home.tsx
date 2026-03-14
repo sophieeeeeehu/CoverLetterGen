@@ -138,7 +138,7 @@ const MyPDF = ({
                 ))}
 
                 <Text style={styles.paragraph}>
-                    Thank you for you time and consideration. I would be thrilled to be able to contribute my skills to {companyname}, and I look forward to the opportunitiy to futher discuss
+                    Thank you for your time and consideration. I would be thrilled to be able to contribute my skills to {companyname}, and I look forward to the opportunitiy to further discuss
                     my qualification for this position.
                 </Text>
             </View>
