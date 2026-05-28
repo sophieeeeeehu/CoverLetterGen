@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
 });
 
 type MyPDFProps = {
+    user: User | null;
     name: string;
     lastname: string;
     hiringManager: string;
@@ -77,11 +78,12 @@ type MyPDFProps = {
     date: string;
     ability: any[];
     firstParagEnd: string;
+    lastParag: string;
 };
 
 const MyPDF = ({
-    name, lastname, hiringManager, jobtitle, companyname,
-    myaddress, mylinkedin, myemail, companylocation, date, ability, firstParagEnd }: MyPDFProps) => (
+    user, name, lastname, hiringManager, jobtitle, companyname,
+    myaddress, mylinkedin, myemail, companylocation, date, ability, firstParagEnd, lastParag }: MyPDFProps) => (
     <Document>
         <Page style={styles.page}>
             <Text style={styles.title}>{name} {lastname}</Text>
@@ -129,14 +131,22 @@ const MyPDF = ({
                 </Text>
                 {ability.map((a) => (
                     <View>
-                        <Text key={a.id} style={styles.bold}>
-                            {a.name} {"\n"}
-                        </Text>
+                        {user?.email == "husophie123@gmail.com"?
+                            <Text key={a.id} style={styles.bold}>
+                                {a.name} {"\n"}
+                            </Text>
+                            :<></>}
                         <Text key={a.id} style={styles.paragraph}>
                             {a.content}
                         </Text>
                     </View>
                 ))}
+
+                <View>
+                        <Text style={styles.paragraph}>
+                            {lastParag}
+                        </Text>
+                    </View>
 
                 <Text style={styles.paragraph}>
                     Thank you for your time and consideration. I would be thrilled to be able to contribute my skills to {companyname}, and I look forward to the opportunitiy to further discuss
@@ -164,6 +174,7 @@ function Home({ user }: { user: User | null }) {
     const [company, setCompany] = useState("")
     const [location, setLocation] = useState("")
     const [firstParagEnd, setFirstParagEnd] = useState("The following are some highlights of my application:")
+    const [lastParag, setLastParag] = useState("")
     // Date
     const [applyDate] = useState<string>(() => {
         const now = new Date();
@@ -397,6 +408,15 @@ useEffect(() => {
                     />
                 </div>
 
+                <div style={{width: "80%"}}>
+                    <input
+                        type="text"
+                        placeholder="Enter Last Paragraph"
+                        value={lastParag}
+                        onChange={(e) => setLastParag(e.target.value)}
+                    />
+                </div>
+
             </div>
 
             <button onClick={() => setShowPreview(!showPreview)}>
@@ -404,7 +424,9 @@ useEffect(() => {
             </button>
             {showPreview && (
                 <PDFViewer style={{ width: "100%", height: "600px", marginTop: 20 }}>
-                    <MyPDF name={name}
+                    <MyPDF 
+                    user={user}
+                    name={name}
                         lastname={lastname}
                         hiringManager={hirename}
                         jobtitle={jobname}
@@ -416,13 +438,16 @@ useEffect(() => {
                         companylocation={location}
                         date={applyDate}
                         ability={selectedability}
-                        firstParagEnd={"The following are some highlights of my application:"}
+                        firstParagEnd={firstParagEnd}
+                        lastParag={lastParag}
                     />
                 </PDFViewer>
             )}
             <PDFDownloadLink
                 document={
-                    <MyPDF name={name}
+                    <MyPDF 
+                    user={user}
+                    name={name}
                         lastname={lastname}
                         hiringManager={hirename}
                         jobtitle={jobname}
@@ -433,7 +458,9 @@ useEffect(() => {
                         companylocation={location}
                         date={applyDate}
                         ability={selectedability}
-                        firstParagEnd={"The following are some highlights of my application:"}
+                        firstParagEnd={firstParagEnd}
+                        lastParag={lastParag}
+                        
                     />
                 }
                 fileName={`${applyDateNum}_${name}_${company}_cover.pdf`}
