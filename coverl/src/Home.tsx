@@ -142,11 +142,14 @@ const MyPDF = ({
                     </View>
                 ))}
 
-                <View>
+                {lastParag === "" ? <></> : (
+                    <View>
                         <Text style={styles.paragraph}>
                             {lastParag}
                         </Text>
-                    </View>
+                    </View>)
+                    }
+                
 
                 <Text style={styles.paragraph}>
                     Thank you for your time and consideration. I would be thrilled to be able to contribute my skills to {companyname}, and I look forward to the opportunitiy to further discuss
