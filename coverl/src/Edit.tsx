@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './supabase';
+import type { User } from '@supabase/supabase-js'
 
-function Edit() {
+
+function Edit({ user }: { user: User | null }) {
     const [ability, setAbility] = useState<any[]>([])
     const [selectedItem, setSelectedItem] = useState<any | null>(null);
     const blankItem = {
@@ -28,7 +30,7 @@ function Edit() {
             // --- ADD LOGIC ---
             const { error } = await supabase
                 .from('CoverLetter')
-                .insert({ name: selectedItem.name, description: selectedItem.description, content: selectedItem.content })
+                .insert({ name: selectedItem.name, description: selectedItem.description, content: selectedItem.content, user_email: user?.email });
 
             if (error) {
                 alert(error.message)
@@ -44,6 +46,7 @@ function Edit() {
             const { data, error } = await supabase
                 .from('CoverLetter')
                 .select('*')
+                .eq('user_email', user?.email)
                 .order('id', { ascending: true })
 
             if (error) {
@@ -55,10 +58,11 @@ function Edit() {
 
         }
         fetchParag()
-    }, [])
+    }, [user])
 
     return (
         <div style={{ maxWidth: '1280px', margin: '20px auto' }}>
+            <h2>user: {user?.email}</h2>
             {selectedItem && (
                 <div className="modal-overlay">
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -105,7 +109,7 @@ function Edit() {
                 className="add-btn"
                 onClick={() => setSelectedItem(blankItem)}
             >
-                + Add New Cover Letter
+                + Add New Cover Letter items
             </button>
         </div>
     )

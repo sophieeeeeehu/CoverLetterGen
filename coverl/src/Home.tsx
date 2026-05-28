@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 // import viteLogo from '/vite.svg'
 import { supabase } from './supabase';
 import { Document, Page, Text, View, Font, StyleSheet, PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
-
+import type { User } from '@supabase/supabase-js'
 
 Font.register({
     family: "Roboto Slab",
@@ -76,11 +76,12 @@ type MyPDFProps = {
     companylocation: string;
     date: string;
     ability: any[];
+    firstParagEnd: string;
 };
 
 const MyPDF = ({
     name, lastname, hiringManager, jobtitle, companyname,
-    myaddress, mylinkedin, myemail, companylocation, date, ability }: MyPDFProps) => (
+    myaddress, mylinkedin, myemail, companylocation, date, ability, firstParagEnd }: MyPDFProps) => (
     <Document>
         <Page style={styles.page}>
             <Text style={styles.title}>{name} {lastname}</Text>
@@ -120,7 +121,7 @@ const MyPDF = ({
 
                         return (
                             <Text key={a.id} style={styles.paragraph}>
-                                and {a.description} will make me a great fit for this position. The following are some highlights of my qualifications:
+                                and {a.description} will make me a great fit for this position. {firstParagEnd}
                             </Text>
                         );
                     })}
@@ -147,19 +148,22 @@ const MyPDF = ({
     </Document>
 );
 
-function Home() {
+function Home({ user }: { user: User | null }) {
+    console.log(user)
+    console.log("Home rendered with user:", user);
     const [showPreview, setShowPreview] = useState(false)
     // my info
-    const [name, setName] = useState("Sophie");
-    const [lastname, setLastName] = useState("Hu");
-    const [myaddress, setMyaddress] = useState("Vancouver, BC")
-    const [mylinkedIn, setLinkedIn] = useState("www.linkedin.com/in/sophiejh")
-    const [myemail, setMyemail] = useState("sophiehu.jh@gmail.com")
+    const [name, setName] = useState("");
+    const [lastname, setLastName] = useState("");
+    const [myaddress, setMyaddress] = useState("")
+    const [mylinkedIn, setLinkedIn] = useState("")
+    const [myemail, setMyemail] = useState("")
     // company info
     const [hirename, setHirename] = useState("Hiring Manager");
     const [jobname, setJobName] = useState("")
     const [company, setCompany] = useState("")
     const [location, setLocation] = useState("")
+    const [firstParagEnd, setFirstParagEnd] = useState("The following are some highlights of my application:")
     // Date
     const [applyDate] = useState<string>(() => {
         const now = new Date();
@@ -183,6 +187,42 @@ function Home() {
     const [ability, setAbility] = useState<any[]>([]);
     const [selectedability, setSelectedAbility] = useState<any[]>([]);
 
+    // set name to the right pdf
+
+useEffect(() => {
+
+    // wait until user exists
+    if (!user) return;
+    console.log("Fetching profile for user:", user.email);
+
+    const fetchProfile = async () => {
+
+        const { data, error } = await supabase
+            .from("CoverLetter_UserInfo")
+            .select("*")
+            .eq("user_email", user.email)
+            .single();
+
+        if (error) {
+            console.error(error);
+            return;
+        }
+
+
+        setName(data?.FirstName);
+        setLastName(data?.LastName);
+        setMyaddress(data?.Address);
+        setLinkedIn(data?.Linkedin);
+        setMyemail(data?.ContactEmail);
+        setHirename(data?.HiringManagerName);
+    };
+
+    fetchProfile();
+
+}, [user]);
+
+
+    // ability add to pdf
     const toggleAbility = (targetAbility: any) => {
         setSelectedAbility((prev) => {
             // Check if the item is already selected
@@ -201,23 +241,36 @@ function Home() {
 
 
     // get data from supabase
-    useEffect(() => {
-        const fetchParag = async () => {
-            const { data, error } = await supabase
-                .from('CoverLetter')
-                .select('*')
-                .order('id', { ascending: false })
 
-            if (error) {
-                console.error(error)
-            } else {
-                setAbility(data ?? [])
-                console.log("ability set!")
-            }
+useEffect(() => {
+    // don't fetch until auth state is known
+    if (user === undefined) return;
 
+    const fetchParag = async () => {
+
+        // no fallback email
+        if (!user?.email) {
+            setAbility([]);
+            return;
         }
-        fetchParag()
-    }, [])
+
+        console.log("FETCHING FOR:", user.email);
+
+        const { data, error } = await supabase
+            .from('CoverLetter')
+            .select('*')
+            .eq('user_email', user.email)
+            .order('id', { ascending: false });
+
+        if (error) {
+            console.error(error);
+        } else {
+            setAbility(data ?? []);
+        }
+    };
+
+    fetchParag();
+}, [user]);
 
     useEffect(() => {
         console.log("Ability has been updated:", ability);
@@ -225,6 +278,7 @@ function Home() {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '1280px', margin: '20px auto' }}>
+            {user? <h1>Welcome, {user.email}!</h1> : null}
 
             {ability.map((a) => {
                 // Check if this specific item is currently in our selected list
@@ -333,6 +387,15 @@ function Home() {
                         onChange={(e) => setLocation(e.target.value)}
                     />
                 </div>
+                <div style={{width: "80%"}}>
+                    <h3>First Paragraph End</h3>
+                    <input
+                        type="text"
+                        placeholder="Enter First Paragraph Ending"
+                        value={firstParagEnd}
+                        onChange={(e) => setFirstParagEnd(e.target.value)}
+                    />
+                </div>
 
             </div>
 
@@ -353,6 +416,7 @@ function Home() {
                         companylocation={location}
                         date={applyDate}
                         ability={selectedability}
+                        firstParagEnd={"The following are some highlights of my application:"}
                     />
                 </PDFViewer>
             )}
@@ -369,6 +433,7 @@ function Home() {
                         companylocation={location}
                         date={applyDate}
                         ability={selectedability}
+                        firstParagEnd={"The following are some highlights of my application:"}
                     />
                 }
                 fileName={`${applyDateNum}_${name}_${company}_cover.pdf`}

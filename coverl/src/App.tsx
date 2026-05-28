@@ -19,15 +19,14 @@ function App() {
         setUser(session?.user ?? null)
       }
     )
-
     return () => listener.subscription.unsubscribe()
   }, [])
 
   return (
     <Routes>
       <Route element={<Banner user={user} />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/edit" element={<Edit />} />
+        <Route path="/" element={<Home user={user}/>} />
+        <Route path="/edit" element={<Edit user={user}/>} />
       </Route>
     </Routes>
   )
