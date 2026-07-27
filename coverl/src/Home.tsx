@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         marginBottom: 5
     },
     text: {
-        fontSize: 12,
+        fontSize: 11,
         fontFamily: 'Calibri',
         textAlign: 'left',
         lineHeight: 1.2,
