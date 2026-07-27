@@ -131,7 +131,7 @@ const MyPDF = ({
                 </Text>
                 {ability.map((a) => (
                     <View>
-                        {user?.email == "husophie123@gmail.com"?
+                        {(user?.email == "husophie123@gmail.com" || user?.email == "huellie123@gmail.com")?
                             <Text key={a.id} style={styles.bold}>
                                 {a.name} {"\n"}
                             </Text>
