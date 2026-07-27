@@ -105,7 +105,7 @@ const MyPDF = ({
                     Dear {hiringManager}, {"\n"}
                 </Text>
                 <Text style={styles.paragraph}>
-                    I am writing to apply for the <Text style={styles.bold}>{jobtitle}</Text> position listed on LinkedIn. I believe{" "}
+                    I am writing to apply for the <Text style={styles.bold}>{jobtitle}</Text> position listed on the Worklearn program. I believe{" "}
 
                     {ability.map((a, index) => {
                         // Only return the JSX if it's NOT the last index
